@@ -45,7 +45,10 @@ void set_jdahep(vector<stdhep_entry> *event)
   }
 }
 
-void displace_vertex(vector<stdhep_entry> *event, gsl_rng *r, double decay_length)
+// decay_length > 0: exponential proper decay length with mean decay_length (c*tau, mm).
+// flat_zmax > 0: instead, decay z (relative to the production point) uniform in [0, flat_zmax] mm,
+//               along the A' flight direction (used for flat-in-z signal samples that are reweighted later).
+void displace_vertex(vector<stdhep_entry> *event, gsl_rng *r, double decay_length, double flat_zmax)
 {
   int ap_id = -1;
   double vx[4];
@@ -61,8 +64,16 @@ void displace_vertex(vector<stdhep_entry> *event, gsl_rng *r, double decay_lengt
       double p = 0.0;
       for (int j = 0; j < 3; j++) p += event->at(i).phep[j]*event->at(i).phep[j];
       p = sqrt(p);
-      double proper_time = gsl_ran_exponential(r, decay_length);
-      double distance = gamma*beta*proper_time;
+      double proper_time, distance;
+      if (flat_zmax > 0) {
+        double dz = flat_zmax*gsl_rng_uniform(r);
+        double pz = event->at(i).phep[2];
+        distance = (pz > 0) ? dz*p/pz : dz;
+        proper_time = distance/(gamma*beta);
+      } else {
+        proper_time = gsl_ran_exponential(r, decay_length);
+        distance = gamma*beta*proper_time;
+      }
       for (int j = 0; j < 3; j++) vx[j] = distance * event->at(i).phep[j]/p;
       vx[3] = gamma*proper_time;
       //printf("gamma=%f p=%f distance=%f vx=%f,%f,%f\n",gamma,p,distance,vx[0],vx[1],vx[2]);
@@ -88,15 +99,17 @@ int main(int argc,char** argv)
 
   int rseed = 0;
   double decay_length = -1.0;
+  double flat_zmax = -1.0;
   int c;
 
-  while ((c = getopt(argc,argv,"hs:l:")) != -1) 
+  while ((c = getopt(argc,argv,"hs:l:u:")) != -1) 
     switch (c)
     {
       case 'h':
         printf("-h: print this help\n");
         printf("-s: RNG seed\n");
         printf("-l: A' decay length in mm\n");
+        printf("-u: A' decay z uniform in [0, value] mm from the production point (instead of -l)\n");
         return(0);
         break;
       case 's':
@@ -104,6 +117,9 @@ int main(int argc,char** argv)
         break;
       case 'l':
         decay_length = atof(optarg);
+        break;
+      case 'u':
+        flat_zmax = atof(optarg);
         break;
       case '?':
         printf("Invalid option or missing option argument; -h to list options\n");
@@ -135,7 +151,8 @@ int main(int argc,char** argv)
   open_write(argv[optind+1], ostream, 1000);
   nevhep = 1;
 
-  printf("Applying decay length of %f mm\n", decay_length > 0 ? decay_length : 0.0);
+  if (flat_zmax > 0) printf("Applying flat decay z in [0, %f] mm\n", flat_zmax);
+  else printf("Applying decay length of %f mm\n", decay_length > 0 ? decay_length : 0.0);
 
   while (true) {
     char line[1000];
@@ -188,7 +205,7 @@ int main(int argc,char** argv)
     }
     remove_nulls(&new_event);
     set_jdahep(&new_event);
-    if (decay_length>0) displace_vertex(&new_event,r,decay_length);
+    if (decay_length>0 || flat_zmax>0) displace_vertex(&new_event,r,decay_length,flat_zmax);
     write_stdhep(&new_event,nevhep);
     write_file(ostream);
     nevhep++;
