@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0)
 
 project(egs5)
 
-add_custom_target(egs5 all)
+add_custom_target(egs5 ALL)
 
 set(EGS5_DIR ${PROJECT_SOURCE_DIR}/src)
 set(EGS5_DATA_DIR ${PROJECT_SOURCE_DIR}/data)
