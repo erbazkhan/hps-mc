@@ -418,6 +418,7 @@ def multiple_try(nb_try=5, sleep=20):
                 except KeyboardInterrupt:
                     raise
                 except Exception as error:
+                    last_error = error
                     global wait_once
                     if not wait_once:
                         text = """Start waiting for update. (more info in debug mode)"""
@@ -430,8 +431,8 @@ def multiple_try(nb_try=5, sleep=20):
                     time.sleep(sleep * (i+1))
 
             if __debug__:
-                raise
-            raise error.__class__('[Fail %i times] \n %s ' % (i+1, error))
+                raise last_error
+            raise last_error.__class__('[Fail %i times] \n %s ' % (i+1, last_error))
         return deco_f_retry
     return deco_retry
 
