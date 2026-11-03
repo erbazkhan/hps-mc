@@ -1,0 +1,19 @@
+[Job]
+log_level = INFO
+dry_run = False
+ignore_return_codes = True
+enable_copy_output_files = True
+check_output_files = True
+delete_existing = True
+
+# Conditions database for ALL production samples: local SQLite file instead of the JLab MySQL server.
+# (Identical to hps_conditions_ekhan_scaled_cosmics_only.db except for 2019 ecal_gains, runs 9000-10999.)
+[JobManager]
+conditions_url = jdbc:sqlite:@CONDITIONS_DB@
+
+[FilterBunches]
+conditions_url = jdbc:sqlite:@CONDITIONS_DB@
+
+[ExtractEventsWithHitAtHodoEcal]
+hps_java_bin_jar = @HPS_JAVA_JAR@
+conditions_url = jdbc:sqlite:@CONDITIONS_DB@
