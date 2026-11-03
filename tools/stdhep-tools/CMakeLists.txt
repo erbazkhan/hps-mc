@@ -24,4 +24,5 @@ add_custom_command(OUTPUT ${stdhep_programs}
     DEPENDS "${CMAKE_BINARY_DIR}/stdhep-tools-src")
 
 add_custom_target(stdhep_tools_build ALL DEPENDS ${stdhep_programs})
+add_dependencies(stdhep_tools_build stdhep_lib_build)
 
