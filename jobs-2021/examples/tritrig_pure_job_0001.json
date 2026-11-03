@@ -1,0 +1,19 @@
+{
+    "run_params": "3pt74",
+    "target_thickness": 0.002,
+    "beam_energy": 3740.0,
+    "num_electrons": 1500,
+    "target_z": -1.1,
+    "run_number": 14272,
+    "detector": "HPS_Run2021Pass1_v9_14272",
+    "steering_files": {
+        "readout": "/org/hps/steering/readout/PhysicsRun2021TrigMultiSingles.lcsim",
+        "recon": "/org/hps/steering/recon/PhysicsRun2021MCRecon_KF_WithSpacing_pass5_physics_HitSmear_HitKill_14272.lcsim"
+    },
+    "seed": 2200001,
+    "nevents": 100000,
+    "output_files": {
+        "ptag:recon": "recon/tritrig_3pt74_recon_0001.slcio"
+    },
+    "output_dir": "/net/data/endeavour2/HPS/physrun2021/home_made_mc/tritrig_pure_run14272"
+}
