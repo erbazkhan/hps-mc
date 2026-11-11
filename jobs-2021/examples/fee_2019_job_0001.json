@@ -1,0 +1,28 @@
+{
+    "seed": 3001,
+    "nevents": 5000,
+    "run_params": "4pt55",
+    "beam_energy": 4550.0,
+    "num_electrons": 1500,
+    "target_thickness": 0.0008,
+    "bunches": 1000,
+    "target_x": 0.0,
+    "target_y": 0.0,
+    "target_z": -7.54,
+    "beam_sigma_x": 0.055,
+    "beam_sigma_y": 0.045,
+    "beam_rot_x": 0.0,
+    "beam_rot_y": 0.0305,
+    "beam_rot_z": 0.0,
+    "run_number": 10615,
+    "detector": "HPS_Physics2019_survey_v4p11_L1L2L3_10615_yaw_0p00317",
+    "steering_files": {
+        "readout": "/org/hps/steering/readout/PhysicsRun2019TrigFEE.lcsim",
+        "recon": "/org/hps/steering/recon/PhysicsRun2019MCRecon_KF_WithSpacing_pass2.lcsim"
+    },
+    "output_files": {
+        "ptag:sim": "fee_4pt55_sim.slcio",
+        "ptag:recon": "fee_4pt55_recon.slcio"
+    },
+    "output_dir": "output"
+}
