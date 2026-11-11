@@ -28,6 +28,8 @@ class DisplaceFlatZ(DisplaceTime):
     def cmd_args(self):
         return DisplaceTime.cmd_args(self) + ["-u", str(self.zmax)]
 
+from hpsmc.tools import ProcessMiniDst
+
 job.description = 'ap gen to recon (testing -- no HPSTR/ana step)'
 
 ## Per-job random seed. hps-mc only passes the job-param seed to MG5; SLIC, BeamCoords and
@@ -101,4 +103,8 @@ job.ptag('sim', 'ap.slcio')
 job.ptag('readout', 'ap_filt_readout.slcio')
 job.ptag('recon', 'ap_filt_readout_recon.slcio')
 
-job.add([c for c in [mg, unzip, cnv, mom, rot, slic, filter_bunches, readout, recon] if c is not None])
+## MiniDST from the recon file (make_mini_dst from [ProcessMiniDst] minidst_install_dir in .hpsmc)
+mdst = ProcessMiniDst(inputs=['ap_filt_readout_recon.slcio'], outputs=['ap_filt_readout_recon_minidst.root'], minidst_args=['-a'])
+job.ptag('minidst', 'ap_filt_readout_recon_minidst.root')
+
+job.add([c for c in [mg, unzip, cnv, mom, rot, slic, filter_bunches, readout, recon, mdst] if c is not None])

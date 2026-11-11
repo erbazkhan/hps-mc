@@ -22,7 +22,8 @@
     },
     "output_files": {
         "ptag:sim": "fee_4pt55_sim.slcio",
-        "ptag:recon": "fee_4pt55_recon.slcio"
+        "ptag:recon": "fee_4pt55_recon.slcio",
+        "ptag:minidst": "fee_4pt55_minidst.root"
     },
     "output_dir": "output"
 }

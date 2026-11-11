@@ -17,7 +17,7 @@ place (not copied). It must have more events than pass the hodo/ecal filter.
 """
 from hpsmc.generators import MG5, StdHepConverter
 from hpsmc.tools import (DisplaceTime, Unzip, BeamCoords, AddMotherFullTruth, SLIC,
-                         ExtractEventsWithHitAtHodoEcal, FilterBunches, JobManager)
+                         ExtractEventsWithHitAtHodoEcal, FilterBunches, JobManager, EvioToLcio)
 
 
 class DisplaceFlatZ(DisplaceTime):
@@ -31,6 +31,8 @@ class DisplaceFlatZ(DisplaceTime):
 
     def cmd_args(self):
         return DisplaceTime.cmd_args(self) + ["-u", str(self.zmax)]
+
+from hpsmc.tools import ProcessMiniDst
 
 job.description = 'ap gen to recon with 2021 pulser-data overlay'
 
@@ -96,9 +98,19 @@ slic = SLIC(seed=seed, nevents=nevents + 1, inputs=rot.output_files(), outputs=[
 filter_events = ExtractEventsWithHitAtHodoEcal(inputs=slic.output_files(), outputs=["ap_filt.slcio"],
                                                event_interval=0, num_hodo_hits=1)
 
+## Raw pulser data: if the file name contains 'evio', convert it to LCIO first with the
+## 'evio_to_lcio' steering (/org/hps/steering/production/Evio2LcioCnv.lcsim). A .slcio file is used as is.
+## The job's nevents limits the conversion; it is always >= the filtered MC events that need pulser events.
+if 'evio' in pulser_file.split('/')[-1]:
+    evio_cnv = EvioToLcio(steering='evio_to_lcio', inputs=[pulser_file], outputs=['pulser_cnv.slcio'])
+    overlay_input = evio_cnv.output_files()[0]
+else:
+    evio_cnv = None
+    overlay_input = pulser_file
+
 ## Overlay each MC event with one pulser-data event
 overlay = JobManager(steering='overlay', inputs=filter_events.output_files(),
-                     overlay_file=pulser_file, outputs=["ap_pulser.slcio"],
+                     overlay_file=overlay_input, outputs=["ap_pulser.slcio"],
                      ignore_job_params=['nevents'])
 
 ## Insert 250 empty bunches between overlaid events
@@ -122,9 +134,15 @@ if mom is not None:
 job.ptag('rot', 'ap_rot.stdhep')                      # after BeamCoords = SLIC input
 job.ptag('sim', 'ap.slcio')                           # SLIC output
 job.ptag('filt', 'ap_filt.slcio')                     # after ExtractEventsWithHitAtHodoEcal
+if evio_cnv is not None:
+    job.ptag('pulser_lcio', 'pulser_cnv.slcio')          # converted pulser data, reusable
 job.ptag('overlay', 'ap_pulser.slcio')                # MC + pulser data merged
 job.ptag('spaced', 'ap_pulser_spaced.slcio')          # after FilterBunches spacing
 job.ptag('readout', 'ap_pulser_readout.slcio')
 job.ptag('recon', 'ap_pulser_recon.slcio')
 
-job.add([c for c in [mg, unzip, cnv, mom, rot, slic, filter_events, overlay, space_overlay, readout, recon] if c is not None])
+## MiniDST from the recon file (make_mini_dst from [ProcessMiniDst] minidst_install_dir in .hpsmc)
+mdst = ProcessMiniDst(inputs=['ap_pulser_recon.slcio'], outputs=['ap_pulser_recon_minidst.root'], minidst_args=['-a'])
+job.ptag('minidst', 'ap_pulser_recon_minidst.root')
+
+job.add([c for c in [mg, unzip, cnv, mom, rot, slic, filter_events, evio_cnv, overlay, space_overlay, readout, recon, mdst] if c is not None])

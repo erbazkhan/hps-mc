@@ -10,6 +10,8 @@ which is a separate downstream step to be chained on later).
 from hpsmc.generators import MG5, StdHepConverter
 from hpsmc.tools import SLIC, JobManager, FilterBunches, BeamCoords, AddMother
 
+from hpsmc.tools import ProcessMiniDst
+
 job.description = 'tritrig gen to recon (testing -- no HPSTR/ana step)'
 
 ## Per-job random seed. hps-mc only passes the job-param seed to MG5; SLIC, BeamCoords and
@@ -47,4 +49,8 @@ job.ptag('readout', 'tritrig_unweighted_events_mom_rot_filt_readout.slcio')
 job.ptag('recon', 'tritrig_unweighted_events_mom_rot_filt_readout_recon.slcio')
 
 ## Add job components -- stops at recon, no HPSTR
-job.add([mg, stdhep_cnv, mom, rot, sim, filter_bunches, readout, recon])
+## MiniDST from the recon file (make_mini_dst from [ProcessMiniDst] minidst_install_dir in .hpsmc)
+mdst = ProcessMiniDst(inputs=['tritrig_unweighted_events_mom_rot_filt_readout_recon.slcio'], outputs=['tritrig_unweighted_events_mom_rot_filt_readout_recon_minidst.root'], minidst_args=['-a'])
+job.ptag('minidst', 'tritrig_unweighted_events_mom_rot_filt_readout_recon_minidst.root')
+
+job.add([mg, stdhep_cnv, mom, rot, sim, filter_bunches, readout, recon, mdst])

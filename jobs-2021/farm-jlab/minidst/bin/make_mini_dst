@@ -1,0 +1,6 @@
+#!/bin/bash
+# Runs Maurik's make_mini_dst with its ROOT libraries set for this program only, so they cannot clash
+# with SLIC/Java libraries elsewhere in the job. Replace with our own hps-analysis build for the group install.
+export ROOTSYS=/u/home/holtrop/root
+export LD_LIBRARY_PATH=$ROOTSYS/lib:/home/holtrop/lib:/home/hps/lib:$LD_LIBRARY_PATH
+exec /home/holtrop/bin/make_mini_dst "$@"

@@ -17,3 +17,12 @@ conditions_url = jdbc:sqlite:@CONDITIONS_DB@
 [ExtractEventsWithHitAtHodoEcal]
 hps_java_bin_jar = @HPS_JAVA_JAR@
 conditions_url = jdbc:sqlite:@CONDITIONS_DB@
+
+# Raw pulser data (EVIO) is converted in the pulser jobs when the pulser file name contains "evio"
+[EvioToLcio]
+hps_java_bin_jar = @HPS_JAVA_JAR@
+conditions_url = jdbc:sqlite:@CONDITIONS_DB@
+
+# make_mini_dst is run as <minidst_install_dir>/bin/make_mini_dst (on the farm: farm-jlab/minidst, a wrapper)
+[ProcessMiniDst]
+minidst_install_dir = @MINIDST_INSTALL@

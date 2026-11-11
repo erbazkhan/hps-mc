@@ -23,7 +23,8 @@
     "nevents": 10000,
     "apmass": 100,
     "output_files": {
-        "ptag:recon": "recon/ap_3pt74_m100MeV_recon_0001.slcio"
+        "ptag:recon": "recon/ap_3pt74_m100MeV_recon_0001.slcio",
+        "ptag:minidst": "minidst/ap_3pt74_m100MeV_minidst_0001.root"
     },
     "output_dir": "/net/data/endeavour2/HPS/physrun2021/home_made_mc/ap_pure_lheuniform_run14272/m100MeV"
 }

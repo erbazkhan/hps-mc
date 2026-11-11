@@ -24,7 +24,8 @@
     "pulser_file": "/net/data/endeavour2/HPS/physrun2021/home_made_mc/pulser_pieces/p182/pulser_182.007.slcio",
     "output_files": {
         "ptag:recon": "recon/wab_pulser_3pt74_recon_0001.slcio",
-        "ptag:lhe": "lhe/wab_pulser_3pt74_lhe_0001.lhe.gz"
+        "ptag:lhe": "lhe/wab_pulser_3pt74_lhe_0001.lhe.gz",
+        "ptag:minidst": "minidst/wab_pulser_3pt74_minidst_0001.root"
     },
     "output_dir": "/net/data/endeavour2/HPS/physrun2021/home_made_mc/wab_pulser_run14272"
 }

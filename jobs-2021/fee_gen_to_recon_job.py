@@ -5,6 +5,8 @@ The simulation is followed by reconstruction of the events.
 from hpsmc.generators import EGS5
 from hpsmc.tools import BeamCoords, RandomSample, SLIC, ExtractEventsWithHitAtHodoEcal, JobManager
 
+from hpsmc.tools import ProcessMiniDst
+
 job.description = 'beam from generation to slic'
 
 ## Get job input file targets
@@ -45,4 +47,8 @@ job.ptag('readout', 'beam_rot_sampled_filt_readout.slcio')
 job.ptag('recon', 'beam_rot_sampled_filt_readout_recon.slcio')
 
 ## Run the job
-job.add([egs5, rot, sample, slic, space_events, readout, recon])
+## MiniDST from the recon file (make_mini_dst from [ProcessMiniDst] minidst_install_dir in .hpsmc)
+mdst = ProcessMiniDst(inputs=['beam_rot_sampled_filt_readout_recon.slcio'], outputs=['beam_rot_sampled_filt_readout_recon_minidst.root'], minidst_args=['-a'])
+job.ptag('minidst', 'beam_rot_sampled_filt_readout_recon_minidst.root')
+
+job.add([egs5, rot, sample, slic, space_events, readout, recon, mdst])

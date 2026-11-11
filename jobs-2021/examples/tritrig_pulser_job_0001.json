@@ -32,7 +32,8 @@
         "ptag:filt": "filt/tritrig_pulser_3pt74_filt_0001.slcio",
         "ptag:overlay": "overlay/tritrig_pulser_3pt74_overlay_0001.slcio",
         "ptag:spaced": "spaced/tritrig_pulser_3pt74_spaced_0001.slcio",
-        "ptag:readout": "readout/tritrig_pulser_3pt74_readout_0001.slcio"
+        "ptag:readout": "readout/tritrig_pulser_3pt74_readout_0001.slcio",
+        "ptag:minidst": "minidst/tritrig_pulser_3pt74_minidst_0001.root"
     },
     "output_dir": "/net/data/endeavour2/HPS/physrun2021/home_made_mc/tritrig_pulser_beamspot_run14272"
 }

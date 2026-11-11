@@ -18,6 +18,8 @@ from hpsmc.generators import MG5, StdHepConverter
 from hpsmc.tools import (SLIC, JobManager, FilterBunches, BeamCoords, AddMother,
                          ExtractEventsWithHitAtHodoEcal)
 
+from hpsmc.tools import ProcessMiniDst
+
 job.description = 'tritrig gen to recon with 2021 pulser-data overlay'
 
 ## Per-job random seed. hps-mc only passes the job-param seed to MG5; SLIC and BeamCoords
@@ -77,4 +79,8 @@ job.ptag('spaced', 'tritrig_pulser_spaced.slcio')              # after FilterBun
 job.ptag('readout', 'tritrig_pulser_readout.slcio')
 job.ptag('recon', 'tritrig_pulser_recon.slcio')
 
-job.add([mg, stdhep_cnv, mom, rot, sim, filter_events, overlay, space_overlay, readout, recon])
+## MiniDST from the recon file (make_mini_dst from [ProcessMiniDst] minidst_install_dir in .hpsmc)
+mdst = ProcessMiniDst(inputs=['tritrig_pulser_recon.slcio'], outputs=['tritrig_pulser_recon_minidst.root'], minidst_args=['-a'])
+job.ptag('minidst', 'tritrig_pulser_recon_minidst.root')
+
+job.add([mg, stdhep_cnv, mom, rot, sim, filter_events, overlay, space_overlay, readout, recon, mdst])

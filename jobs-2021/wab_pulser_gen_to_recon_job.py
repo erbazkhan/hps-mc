@@ -13,6 +13,8 @@ than pass the hodo/ecal filter.
 from hpsmc.generators import MG5, StdHepConverter
 from hpsmc.tools import SLIC, JobManager, FilterBunches, BeamCoords, ExtractEventsWithHitAtHodoEcal
 
+from hpsmc.tools import ProcessMiniDst
+
 job.description = 'WAB gen to recon with 2021 pulser-data overlay'
 
 ## Per-job random seed: hps-mc only passes the job-param seed to MG5 (and EGS5); SLIC and BeamCoords
@@ -67,4 +69,8 @@ job.ptag('spaced', 'wab_pulser_spaced.slcio')         # after FilterBunches spac
 job.ptag('readout', 'wab_pulser_readout.slcio')
 job.ptag('recon', 'wab_pulser_recon.slcio')
 
-job.add([mg, cnv, rot, sim, filter_events, overlay, space_overlay, readout, recon])
+## MiniDST from the recon file (make_mini_dst from [ProcessMiniDst] minidst_install_dir in .hpsmc)
+mdst = ProcessMiniDst(inputs=['wab_pulser_recon.slcio'], outputs=['wab_pulser_recon_minidst.root'], minidst_args=['-a'])
+job.ptag('minidst', 'wab_pulser_recon_minidst.root')
+
+job.add([mg, cnv, rot, sim, filter_events, overlay, space_overlay, readout, recon, mdst])

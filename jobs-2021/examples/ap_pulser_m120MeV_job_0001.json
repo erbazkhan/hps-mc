@@ -25,7 +25,8 @@
     "apmass": 120,
     "pulser_file": "/net/data/endeavour2/HPS/physrun2021/MC_test/pulser/pulser_451.slcio",
     "output_files": {
-        "ptag:recon": "recon/ap_pulser_3pt74_m120MeV_recon_0001.slcio"
+        "ptag:recon": "recon/ap_pulser_3pt74_m120MeV_recon_0001.slcio",
+        "ptag:minidst": "minidst/ap_pulser_3pt74_m120MeV_minidst_0001.root"
     },
     "output_dir": "/net/data/endeavour2/HPS/physrun2021/home_made_mc/ap_pulser_lheuniform_run14272/m120MeV"
 }

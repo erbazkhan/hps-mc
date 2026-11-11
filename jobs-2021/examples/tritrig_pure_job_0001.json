@@ -13,7 +13,8 @@
     "seed": 2200001,
     "nevents": 100000,
     "output_files": {
-        "ptag:recon": "recon/tritrig_3pt74_recon_0001.slcio"
+        "ptag:recon": "recon/tritrig_3pt74_recon_0001.slcio",
+        "ptag:minidst": "minidst/tritrig_3pt74_minidst_0001.root"
     },
     "output_dir": "/net/data/endeavour2/HPS/physrun2021/home_made_mc/tritrig_pure_run14272"
 }
