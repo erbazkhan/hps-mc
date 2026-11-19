@@ -445,12 +445,12 @@ class ProcessMiniDst(Component):
     Required configs are: **minidst_install_dir**
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, minidst_args=None, **kwargs):
         """!
         Initialize ProcessMiniDst with default input file and the command to run.
         """
         self.input_file = None
-        self.minidst_args = None
+        self.minidst_args = minidst_args  # e.g. ["-a"]
         # Ensure to call the parent constructor properly
         Component.__init__(self, name='make_mini_dst',
                            command='make_mini_dst',
@@ -466,6 +466,10 @@ class ProcessMiniDst(Component):
 
         if not os.path.exists(self.minidst_install_dir):
             raise Exception("minidst_install_dir does not exist: %s" % self.minidst_install_dir)
+        # Run the make_mini_dst from the configured install, not whichever one is first on PATH.
+        self.command = os.path.join(self.minidst_install_dir, "bin", "make_mini_dst")
+        if not os.access(self.command, os.X_OK):
+            raise Exception("make_mini_dst not found or not executable: %s" % self.command)
 
     def required_parameters(self):
         """!
@@ -498,30 +502,16 @@ class ProcessMiniDst(Component):
         """! Adjust names of output files."""
         if self.outputs is None:
             f, ext = os.path.splitext(self.input_files()[0])
-            self.outputs = f"{f}_minidst.root"
-            print(f"Set outputs to: {self.outputs}")
+            self.outputs = [f"{f}_minidst.root"]  # a list: job.py checks each entry as a file name
 
         return self.outputs
 
     def cmd_args(self):
         """!
-        Setup command arguments for make_mini_dst.
+        Setup command arguments for make_mini_dst: [minidst_args...] -o <output> <inputs...>
         @return list of arguments
         """
-        args = []
-
-        print("===== Make MiniDST with input files: ", end=" ")
-        for i in range(len(self.input_files())):
-            print(f"{self.input_files()[i]}", end=", ")
-        print(f" ==> {self.output_files()}")
-
-        if self.minidst_args is not None:
-            args.extend(self.minidst_args)
-
-        args.extend(['-o', self.output_files()])
-        args.extend(self.input_files())
-        return args
-
+        return list(self.minidst_args or []) + ["-o", self.output_files()[0]] + list(self.input_files())
 
 class HPSTR(Component):
     """!
